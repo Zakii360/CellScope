@@ -2,15 +2,9 @@
 ==========================================================
 CellScope
 
-phone.js v1
+phone.js v2
 
 Phone Number Intelligence Engine
-
-Handles:
-- Normalization
-- Validation
-- Country detection
-- Number classification
 
 ==========================================================
 */
@@ -20,17 +14,15 @@ window.CellPhone = {
 
 
 
-
-
 // ======================================================
-// Remove Formatting
+// Clean Input
 // ======================================================
 
 
 clean(number){
 
 
-    return number
+    return String(number)
 
     .replace(
         /[^0-9+]/g,
@@ -38,7 +30,6 @@ clean(number){
     )
 
     .trim();
-
 
 
 },
@@ -50,7 +41,7 @@ clean(number){
 
 
 // ======================================================
-// Normalize Number
+// Normalize
 // ======================================================
 
 
@@ -58,7 +49,7 @@ normalize(input){
 
 
 
-    let original =
+    const original =
     input;
 
 
@@ -70,32 +61,29 @@ normalize(input){
 
 
 
-    if(
-        number.startsWith(
-            "00"
-        )
-    ){
+    // Convert 00 prefix
 
+    if(
+        number.startsWith("00")
+    ){
 
         number =
         "+" +
-        number.substring(
-            2
-        );
-
+        number.substring(2);
 
     }
 
 
 
+
+
+
+    // Default US numbers
+
     if(
-        !number.startsWith(
-            "+"
-        )
+        !number.startsWith("+")
     ){
 
-
-        // Default North America
 
         number =
         "+1" +
@@ -119,11 +107,11 @@ normalize(input){
 
 
 
-    const country =
-    CellDB.getCountry(
+    const type =
+    this.type(
+        number,
         countryCode
     );
-
 
 
 
@@ -133,25 +121,20 @@ normalize(input){
     return {
 
 
-
         original,
-
 
 
         international:
         number,
 
 
-
         countryCode,
 
 
-
         country:
-        country?.country
-        ||
-        "Unknown",
-
+        this.countryName(
+            countryCode
+        ),
 
 
         valid:
@@ -160,34 +143,19 @@ normalize(input){
         ),
 
 
-
-        type:
-        this.type(
-            number
-        ),
-
+        type,
 
 
         mobile:
-        this.type(
-            number
-        )
-        ===
-        "Mobile",
-
+        type === "Mobile",
 
 
         landline:
-        this.type(
-            number
-        )
-        ===
-        "Landline"
+        type === "Landline"
 
 
 
     };
-
 
 
 },
@@ -199,11 +167,18 @@ normalize(input){
 
 
 // ======================================================
-// Country Code Detection
+// Country Code
 // ======================================================
 
 
 getCountryCode(number){
+
+
+
+    if(
+        !window.CellDB
+    )
+        return "Unknown";
 
 
 
@@ -224,9 +199,7 @@ getCountryCode(number){
 
 
         if(
-            number.startsWith(
-                code
-            )
+            number.startsWith(code)
         ){
 
             return code;
@@ -250,7 +223,41 @@ getCountryCode(number){
 
 
 // ======================================================
-// Validate
+// Country Name
+// ======================================================
+
+
+countryName(code){
+
+
+
+    if(
+        window.CellDB
+        &&
+        CellDB.countries[code]
+    ){
+
+
+        return CellDB.countries[code].country;
+
+
+    }
+
+
+
+    return "Unknown";
+
+
+},
+
+
+
+
+
+
+
+// ======================================================
+// Validation
 // ======================================================
 
 
@@ -277,7 +284,6 @@ validate(number){
     );
 
 
-
 },
 
 
@@ -287,78 +293,36 @@ validate(number){
 
 
 // ======================================================
-// Number Type Detection
+// Number Type
 // ======================================================
 
 
-type(number){
-
-
-
-    const country =
-    this.getCountryCode(
-        number
-    );
-
-
-
-    const digits =
-    number.replace(
-        /\D/g,
-        ""
-    );
-
+type(number,code){
 
 
 
     /*
     
-    Basic intelligence layer.
+    This is a starter
+    numbering intelligence layer.
 
     Later expanded with
-    national numbering plans.
+    full numbering plans.
 
     */
 
 
 
     if(
-        country === "+1"
+        code === "+44"
     ){
 
 
         if(
-            digits.length===11
+            number.startsWith("+447")
         ){
-
-
-            return "Mobile / Landline";
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-    if(
-        country === "+44"
-    ){
-
-
-        if(
-            number.startsWith(
-                "+447"
-            )
-        ){
-
 
             return "Mobile";
-
 
         }
 
@@ -373,26 +337,37 @@ type(number){
 
 
 
+
     if(
-        country === "+81"
+        code === "+81"
     ){
 
 
         if(
-            number.startsWith(
-                "+817"
-            )
+            number.startsWith("+817")
             ||
-            number.startsWith(
-                "+818"
-            )
+            number.startsWith("+818")
         ){
-
 
             return "Mobile";
 
-
         }
+
+
+    }
+
+
+
+
+
+
+
+    if(
+        code === "+1"
+    ){
+
+
+        return "Mobile / Landline";
 
 
     }
@@ -405,7 +380,6 @@ type(number){
     return "Unknown";
 
 
-
 },
 
 
@@ -415,7 +389,7 @@ type(number){
 
 
 // ======================================================
-// Display Format
+// Format
 // ======================================================
 
 
@@ -434,7 +408,6 @@ format(number){
     return "+" + clean;
 
 
-
 }
 
 
@@ -449,9 +422,10 @@ format(number){
 
 
 
+
 console.log(
 
-"%cCellScope Phone Engine Loaded",
+"%cCellScope Phone Engine v2 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
