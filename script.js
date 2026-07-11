@@ -2,27 +2,32 @@
 ==========================================================
 CellScope
 
-script.js v1
+script.js v2
 
-Main Intelligence Controller
+Main Controller
 
 ==========================================================
 */
 
 
-const input =
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+
+const CellScopeInput =
 document.getElementById(
     "phoneInput"
 );
 
 
-const button =
+const CellScopeButton =
 document.getElementById(
     "analyzeBtn"
 );
 
 
-const results =
+const CellScopeResults =
 document.getElementById(
     "results"
 );
@@ -33,7 +38,7 @@ document.getElementById(
 
 
 // ======================================================
-// UI Helpers
+// Helpers
 // ======================================================
 
 
@@ -49,12 +54,14 @@ function set(id,value){
     if(element){
 
         element.textContent =
-        value || "-";
+        value ?? "-";
 
     }
 
 
 }
+
+
 
 
 
@@ -67,19 +74,23 @@ function clearResults(){
     .querySelectorAll(
         "strong"
     )
-    .forEach(el=>{
+    .forEach(
+        element=>{
 
-        el.textContent="-";
+            element.textContent="-";
 
-    });
+        }
+    );
 
 
-
-    document
-    .getElementById(
+    const list =
+    document.getElementById(
         "summaryList"
-    )
-    .innerHTML="";
+    );
+
+
+    if(list)
+        list.innerHTML="";
 
 
 }
@@ -93,11 +104,14 @@ function clearResults(){
 function addSummary(text){
 
 
-
     const list =
     document.getElementById(
         "summaryList"
     );
+
+
+    if(!list)
+        return;
 
 
 
@@ -107,10 +121,8 @@ function addSummary(text){
     );
 
 
-
     item.textContent =
     "• " + text;
-
 
 
     list.appendChild(
@@ -127,9 +139,8 @@ function addSummary(text){
 
 
 
-
 // ======================================================
-// Render Phone Data
+// Render Functions
 // ======================================================
 
 
@@ -161,7 +172,6 @@ function renderPhone(data){
     );
 
 
-
     set(
         "valid",
         data.valid
@@ -170,7 +180,6 @@ function renderPhone(data){
         :
         "No"
     );
-
 
 
     set(
@@ -193,7 +202,6 @@ function renderPhone(data){
     );
 
 
-
 }
 
 
@@ -201,15 +209,7 @@ function renderPhone(data){
 
 
 
-
-
-// ======================================================
-// Render Geo
-// ======================================================
-
-
 function renderGeo(data){
-
 
 
     if(!data)
@@ -241,7 +241,6 @@ function renderGeo(data){
     );
 
 
-
 }
 
 
@@ -250,15 +249,7 @@ function renderGeo(data){
 
 
 
-
-
-// ======================================================
-// Render Carrier
-// ======================================================
-
-
 function renderCarrier(data){
-
 
 
     if(!data)
@@ -296,7 +287,6 @@ function renderCarrier(data){
     );
 
 
-
 }
 
 
@@ -305,20 +295,11 @@ function renderCarrier(data){
 
 
 
-
-
-// ======================================================
-// Render Reputation
-// ======================================================
-
-
 function renderReputation(data){
-
 
 
     if(!data)
         return;
-
 
 
 
@@ -346,7 +327,6 @@ function renderReputation(data){
     );
 
 
-
 }
 
 
@@ -355,15 +335,7 @@ function renderReputation(data){
 
 
 
-
-
-// ======================================================
-// Render Database
-// ======================================================
-
-
 function renderDatabase(data){
-
 
 
     if(!data)
@@ -385,9 +357,8 @@ function renderDatabase(data){
 
     set(
         "records",
-        data.records
+        "1"
     );
-
 
 
 }
@@ -401,7 +372,7 @@ function renderDatabase(data){
 
 
 // ======================================================
-// Main Analyzer
+// Analyzer
 // ======================================================
 
 
@@ -410,7 +381,7 @@ async function analyze(){
 
 
     const value =
-    input.value.trim();
+    CellScopeInput.value.trim();
 
 
 
@@ -419,11 +390,12 @@ async function analyze(){
 
 
 
+
     clearResults();
 
 
 
-    results.classList.remove(
+    CellScopeResults.classList.remove(
         "hidden"
     );
 
@@ -436,15 +408,12 @@ async function analyze(){
 
 
 
+
     try{
 
 
-
-
-
-
         addSummary(
-            "Normalizing phone number"
+            "Parsing phone number"
         );
 
 
@@ -463,15 +432,14 @@ async function analyze(){
 
 
 
-
         addSummary(
-            "Detecting location"
+            "Detecting geographic information"
         );
 
 
 
         const geo =
-        CellGeo.lookup(
+        CellGeo.analyze(
             phone
         );
 
@@ -485,12 +453,9 @@ async function analyze(){
 
 
 
-
-
         addSummary(
-            "Checking carrier intelligence"
+            "Checking carrier database"
         );
-
 
 
         const carrier =
@@ -498,7 +463,6 @@ async function analyze(){
             phone,
             geo
         );
-
 
 
         renderCarrier(
@@ -510,10 +474,8 @@ async function analyze(){
 
 
 
-
-
         addSummary(
-            "Checking reputation database"
+            "Checking reputation"
         );
 
 
@@ -535,16 +497,15 @@ async function analyze(){
 
 
 
-
         addSummary(
-            "Searching local intelligence database"
+            "Searching local database"
         );
 
 
 
         const database =
         CellDB.lookup(
-            phone
+            phone.international
         );
 
 
@@ -578,7 +539,6 @@ async function analyze(){
 
 
 
-
     }
 
 
@@ -594,7 +554,7 @@ async function analyze(){
 
         set(
             "status",
-            "Failed"
+            "Error"
         );
 
 
@@ -608,9 +568,7 @@ async function analyze(){
 
 
 
-
 }
-
 
 
 
@@ -624,25 +582,39 @@ async function analyze(){
 // ======================================================
 
 
-button.onclick =
-analyze;
+if(CellScopeButton){
+
+
+    CellScopeButton.onclick =
+    analyze;
+
+
+}
 
 
 
-input.onkeydown =
-event=>{
+if(CellScopeInput){
 
 
-    if(
-        event.key==="Enter"
-    ){
-
-        analyze();
-
-    }
+    CellScopeInput.onkeydown =
+    event=>{
 
 
-};
+        if(
+            event.key==="Enter"
+        ){
+
+            analyze();
+
+        }
+
+
+    };
+
+
+}
+
+
 
 
 
@@ -650,23 +622,24 @@ event=>{
 
 document
 .querySelectorAll(
-    ".example"
+".example"
 )
-.forEach(button=>{
+.forEach(
+button=>{
 
 
-    button.onclick =
-    ()=>{
+button.onclick =
+()=>{
 
 
-        input.value =
-        button.textContent;
+CellScopeInput.value =
+button.textContent;
 
 
-        analyze();
+analyze();
 
 
-    };
+};
 
 
 });
@@ -679,8 +652,12 @@ document
 
 console.log(
 
-"%cCellScope Intelligence Controller Loaded",
+"%cCellScope Controller v2 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
 );
+
+
+
+});
