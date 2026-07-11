@@ -1,235 +1,613 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CellScope • Public Phone Intelligence</title>
 
-    <meta name="description" content="Analyze phone numbers with detailed public telecom metadata.">
-    <meta name="theme-color" content="#0b0f16">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>CellScope • Public Phone Intelligence</title>
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+<meta name="description" content="Analyze phone numbers using public telecom intelligence.">
 
-    <!-- Phone parser -->
-    <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.13/bundle/libphonenumber-max.js"></script>
+<meta name="theme-color" content="#070b12">
 
-    <!-- Database -->
-    <script src="database.js"></script>
 
-    <!-- App -->
-    <script src="script.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.13/bundle/libphonenumber-max.js"></script>
+
+<script src="database.js"></script>
+
+<script src="intelligence.js"></script>
+
+<script src="script.js" defer></script>
+
+
 </head>
+
+
 <body>
 
+
 <div class="bg">
-    <div class="blur blur1"></div>
-    <div class="blur blur2"></div>
+
+<div class="blur blur1"></div>
+<div class="blur blur2"></div>
+
 </div>
+
+
 
 <header>
 
-    <div class="logo">
-        <div class="logo-icon">📱</div>
 
-        <div>
-            <h1>CellScope</h1>
-            <p>Public Phone Intelligence</p>
-        </div>
-    </div>
+<div class="logo">
 
-</header>
 
-<main>
+<div class="logo-icon">
+📱
+</div>
 
-<section class="hero">
 
-    <h2>
-        Analyze any phone number.
-    </h2>
+<div>
 
-    <p>
-        Validation, formatting, country, carrier, region, timezone,
-        telecom metadata, and much more.
-    </p>
+<h1>
+CellScope
+</h1>
 
-    <div class="search">
-
-        <input
-            id="phoneInput"
-            type="text"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="+1 (555) 123-4567">
-
-        <button id="analyzeBtn">
-            Analyze
-        </button>
-
-    </div>
-
-    <div class="examples">
-
-        <span>Try:</span>
-
-        <button class="example">
-            +1 212 555 1234
-        </button>
-
-        <button class="example">
-            +44 20 7946 0018
-        </button>
-
-        <button class="example">
-            +81 3 1234 5678
-        </button>
-
-    </div>
-
-</section>
-
-<section id="results" class="hidden">
-
-<div class="grid">
-
-    <div class="card">
-
-        <h3>Overview</h3>
-
-        <div class="rows">
-
-            <div class="row">
-                <span>Valid</span>
-                <strong id="valid">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Possible</span>
-                <strong id="possible">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Type</span>
-                <strong id="type">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Country</span>
-                <strong id="country">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Calling Code</span>
-                <strong id="callingCode">-</strong>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h3>Formatting</h3>
-
-        <div class="rows">
-
-            <div class="row">
-                <span>E.164</span>
-                <strong id="e164">-</strong>
-            </div>
-
-            <div class="row">
-                <span>International</span>
-                <strong id="international">-</strong>
-            </div>
-
-            <div class="row">
-                <span>National</span>
-                <strong id="national">-</strong>
-            </div>
-
-            <div class="row">
-                <span>RFC3966</span>
-                <strong id="rfc">-</strong>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h3>Geographic</h3>
-
-        <div class="rows">
-
-            <div class="row">
-                <span>Area Code</span>
-                <strong id="areaCode">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Region</span>
-                <strong id="region">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Timezone</span>
-                <strong id="timezone">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Carrier</span>
-                <strong id="carrier">-</strong>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h3>Raw Number</h3>
-
-        <div class="rows">
-
-            <div class="row">
-                <span>Input</span>
-                <strong id="rawInput">-</strong>
-            </div>
-
-            <div class="row">
-                <span>National Number</span>
-                <strong id="nationalNumber">-</strong>
-            </div>
-
-            <div class="row">
-                <span>Country Code</span>
-                <strong id="countryCode">-</strong>
-            </div>
-
-        </div>
-
-    </div>
+<p>
+Public Phone Intelligence
+</p>
 
 </div>
 
+
+</div>
+
+
+</header>
+
+
+
+
+
+<main>
+
+
+<section class="hero">
+
+
+<h2>
+Analyze any phone number.
+</h2>
+
+
+<p>
+
+Explore public telecom metadata,
+numbering information, formatting,
+regions, and technical details.
+
+</p>
+
+
+
+
+<div class="search">
+
+
+<input
+id="phoneInput"
+type="text"
+placeholder="+1 (555) 123-4567"
+autocomplete="off"
+>
+
+
+<button id="analyzeBtn">
+
+Analyze
+
+</button>
+
+
+</div>
+
+
+
+<div class="examples">
+
+<span>
+Examples:
+</span>
+
+
+<button class="example">
++1 212 555 1234
+</button>
+
+
+<button class="example">
++44 20 7946 0018
+</button>
+
+
+<button class="example">
++81 3 1234 5678
+</button>
+
+
+</div>
+
+
+
 </section>
+
+
+
+
+
+<section id="results" class="hidden">
+
+
+<div class="grid">
+
+
+
+
+
+<!-- Intelligence -->
+
+<div class="card">
+
+
+<h3>
+🧠 Intelligence Summary
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+
+<span>
+Confidence
+</span>
+
+<strong id="confidence">
+-
+</strong>
+
+</div>
+
+
+
+<div class="row">
+
+<span>
+Analysis Status
+</span>
+
+<strong id="analysisStatus">
+-
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+<ul id="summaryList" class="summary">
+
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- Breakdown -->
+
+<div class="card">
+
+
+<h3>
+🔎 Number Breakdown
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+
+<span>
+Country Code
+</span>
+
+<strong id="breakCountry">
+-
+</strong>
+
+</div>
+
+
+
+<div class="row">
+
+<span>
+Area Code
+</span>
+
+<strong id="breakArea">
+-
+</strong>
+
+</div>
+
+
+
+<div class="row">
+
+<span>
+National Number
+</span>
+
+<strong id="breakNational">
+-
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- Overview -->
+
+
+<div class="card">
+
+
+<h3>
+Overview
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+<span>
+Valid
+</span>
+
+<strong id="valid">
+-
+</strong>
+</div>
+
+
+
+<div class="row">
+<span>
+Possible
+</span>
+
+<strong id="possible">
+-
+</strong>
+</div>
+
+
+
+<div class="row">
+<span>
+Type
+</span>
+
+<strong id="type">
+-
+</strong>
+</div>
+
+
+
+<div class="row">
+<span>
+Country
+</span>
+
+<strong id="country">
+-
+</strong>
+</div>
+
+
+
+<div class="row">
+<span>
+Calling Code
+</span>
+
+<strong id="callingCode">
+-
+</strong>
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- Formatting -->
+
+
+<div class="card">
+
+
+<h3>
+Formatting
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+<span>
+E.164
+</span>
+
+<strong id="e164">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+<span>
+International
+</span>
+
+<strong id="international">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+<span>
+National
+</span>
+
+<strong id="national">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+<span>
+RFC3966
+</span>
+
+<strong id="rfc">
+-
+</strong>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- Geography -->
+
+
+<div class="card">
+
+
+<h3>
+🌎 Geographic Intelligence
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+
+<span>
+Area Code
+</span>
+
+<strong id="areaCode">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Region
+</span>
+
+<strong id="region">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Timezone
+</span>
+
+<strong id="timezone">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Carrier
+</span>
+
+<strong id="carrier">
+-
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Raw -->
+
+
+<div class="card">
+
+
+<h3>
+⚙ Technical Data
+</h3>
+
+
+<div class="rows">
+
+
+<div class="row">
+
+<span>
+Input
+</span>
+
+<strong id="rawInput">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+National Number
+</span>
+
+<strong id="nationalNumber">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+Country Code
+</span>
+
+<strong id="countryCode">
+-
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</section>
+
+
 
 </main>
 
+
+
+
+
 <footer>
 
-    <span>
-        CellScope • Built with HTML, CSS & JavaScript
-    </span>
+CellScope • Open-source phone intelligence platform
 
 </footer>
 
+
+
+
 </body>
+
 </html>
