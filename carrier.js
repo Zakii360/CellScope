@@ -2,14 +2,9 @@
 ==========================================================
 CellScope
 
-carrier.js v1
+carrier.js v2
 
 Carrier Intelligence Engine
-
-Uses:
-- MCC/MNC database
-- Country metadata
-- Network fingerprints
 
 ==========================================================
 */
@@ -19,10 +14,8 @@ window.CellCarrier = {
 
 
 
-
-
 // ======================================================
-// MCC/MNC Extraction
+// MCC/MNC Guessing
 // ======================================================
 
 
@@ -30,97 +23,54 @@ extractMCCMNC(phone){
 
 
 
-    /*
-    
-    Real carrier lookup requires
-    telecom databases.
-
-    This engine supports
-    MCC/MNC fingerprints
-    when available.
-
-    */
-
-
-
-    const digits =
-    phone.international
-    .replace(
-        /\D/g,
-        ""
-    );
-
-
-
-    const country =
+    const code =
     phone.countryCode;
 
 
 
-
-    if(
-        country === "+1"
-    ){
+    switch(code){
 
 
 
-        return [
+        case "+1":
 
-            "310260",
-            "310410",
-            "310012"
+            return [
 
-        ];
+                "310260",
+                "310410",
+                "310012"
+
+            ];
+
+
+
+        case "+44":
+
+            return [
+
+                "23410"
+
+            ];
+
+
+
+        case "+81":
+
+            return [
+
+                "44010"
+
+            ];
+
+
+
+        default:
+
+            return [];
 
 
 
     }
-
-
-
-
-
-
-    if(
-        country === "+44"
-    ){
-
-
-        return [
-
-            "23410"
-
-        ];
-
-
-    }
-
-
-
-
-
-
-
-    if(
-        country === "+81"
-    ){
-
-
-        return [
-
-            "44010"
-
-        ];
-
-
-    }
-
-
-
-
-
-
-    return [];
 
 
 
@@ -148,61 +98,70 @@ lookup(phone,geo){
 
 
 
-    for(
-        const id of possible
+    if(
+        window.CellDB
     ){
 
 
 
-        const carrier =
-        CellDB.getCarrier(
-            id
-        );
-
-
-
-        if(
-            carrier
+        for(
+            const id of possible
         ){
 
 
-            return {
 
-
-                carrier:
-                carrier.carrier,
-
-
-                network:
-                carrier.network,
-
-
-                mcc:
-                carrier.mcc,
-
-
-                mnc:
-                carrier.mnc,
-
-
-                technology:
-                carrier.technology,
-
-
-                country:
-                carrier.country,
-
-
-                confidence:
-                "Database Match"
+            const data =
+            CellDB.getCarrier(
+                id
+            );
 
 
 
-            };
+            if(data){
+
+
+
+                return {
+
+
+
+                    carrier:
+                    data.carrier,
+
+
+                    network:
+                    data.network,
+
+
+                    mcc:
+                    data.mcc,
+
+
+                    mnc:
+                    data.mnc,
+
+
+                    technology:
+                    data.technology,
+
+
+                    country:
+                    data.country,
+
+
+                    confidence:
+                    "Database Match"
+
+
+
+                };
+
+
+
+            }
 
 
         }
-
 
 
     }
@@ -214,6 +173,7 @@ lookup(phone,geo){
 
 
     return {
+
 
 
         carrier:
@@ -251,45 +211,7 @@ lookup(phone,geo){
 
 
 
-},
-
-
-
-
-
-
-
-// ======================================================
-// Technology Guessing
-// ======================================================
-
-
-technology(phone){
-
-
-
-    const length =
-    phone.international.length;
-
-
-
-    if(
-        length >= 12
-    ){
-
-
-        return "Mobile Network";
-
-
-    }
-
-
-
-    return "Unknown";
-
-
 }
-
 
 
 
@@ -302,9 +224,11 @@ technology(phone){
 
 
 
+
+
 console.log(
 
-"%cCellScope Carrier Engine Loaded",
+"%cCellScope Carrier Engine v2 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
