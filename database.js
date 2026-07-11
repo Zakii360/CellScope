@@ -1,425 +1,686 @@
 /*
 ==========================================================
 CellScope
-database.js
+
+script.js v1
+
+Main Intelligence Controller
+
 ==========================================================
 */
 
-window.CellScopeDB = {
 
-    version: "1.0.0",
+const input =
+document.getElementById(
+    "phoneInput"
+);
 
-    updated: "2026-07-11",
 
-    // ======================================================
-    // US Area Codes
-    // ======================================================
+const button =
+document.getElementById(
+    "analyzeBtn"
+);
 
-    areaCodes: {
 
-        "201":{
-            region:"New Jersey",
-            state:"NJ",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
+const results =
+document.getElementById(
+    "results"
+);
 
-        "202":{
-            region:"Washington",
-            state:"DC",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
 
-        "203":{
-            region:"Connecticut",
-            state:"CT",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
 
-        "206":{
-            region:"Seattle",
-            state:"WA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
 
-        "207":{
-            region:"Maine",
-            state:"ME",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
 
-        "210":{
-            region:"San Antonio",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
 
-        "212":{
-            region:"Manhattan",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
+// ======================================================
+// UI Helpers
+// ======================================================
 
-        "213":{
-            region:"Los Angeles",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
 
-        "214":{
-            region:"Dallas",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
+function set(id,value){
 
-        "215":{
-            region:"Philadelphia",
-            state:"PA",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
 
-        "216":{
-            region:"Cleveland",
-            state:"OH",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
+    const element =
+    document.getElementById(
+        id
+    );
 
-        "305":{
-            region:"Miami",
-            state:"FL",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
 
-        "310":{
-            region:"West Los Angeles",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
+    if(element){
 
-        "312":{
-            region:"Chicago",
-            state:"IL",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
-
-        "315":{
-            region:"Central New York",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "347":{
-            region:"New York City",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "404":{
-            region:"Atlanta",
-            state:"GA",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "408":{
-            region:"San Jose",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "415":{
-            region:"San Francisco",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "469":{
-            region:"Dallas",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
-
-        "480":{
-            region:"Phoenix",
-            state:"AZ",
-            timezone:"America/Phoenix",
-            carrier:"Mixed"
-        },
-
-        "503":{
-            region:"Portland",
-            state:"OR",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "512":{
-            region:"Austin",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
-
-        "516":{
-            region:"Nassau County",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "518":{
-            region:"Albany",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "561":{
-            region:"Palm Beach",
-            state:"FL",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "602":{
-            region:"Phoenix",
-            state:"AZ",
-            timezone:"America/Phoenix",
-            carrier:"Mixed"
-        },
-
-        "609":{
-            region:"Central New Jersey",
-            state:"NJ",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "617":{
-            region:"Boston",
-            state:"MA",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "646":{
-            region:"Manhattan",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "650":{
-            region:"San Mateo",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "657":{
-            region:"Orange County",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "702":{
-            region:"Las Vegas",
-            state:"NV",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "703":{
-            region:"Northern Virginia",
-            state:"VA",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "704":{
-            region:"Charlotte",
-            state:"NC",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "713":{
-            region:"Houston",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
-
-        "718":{
-            region:"New York City",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "732":{
-            region:"Central New Jersey",
-            state:"NJ",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "754":{
-            region:"Fort Lauderdale",
-            state:"FL",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "786":{
-            region:"Miami",
-            state:"FL",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "805":{
-            region:"Santa Barbara",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "808":{
-            region:"Hawaii",
-            state:"HI",
-            timezone:"Pacific/Honolulu",
-            carrier:"Mixed"
-        },
-
-        "818":{
-            region:"San Fernando Valley",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "832":{
-            region:"Houston",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        },
-
-        "845":{
-            region:"Hudson Valley",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "857":{
-            region:"Boston",
-            state:"MA",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "858":{
-            region:"San Diego",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "862":{
-            region:"New Jersey",
-            state:"NJ",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "914":{
-            region:"Westchester",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "917":{
-            region:"New York City",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "929":{
-            region:"New York City",
-            state:"NY",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "949":{
-            region:"Irvine",
-            state:"CA",
-            timezone:"America/Los_Angeles",
-            carrier:"Mixed"
-        },
-
-        "954":{
-            region:"Fort Lauderdale",
-            state:"FL",
-            timezone:"America/New_York",
-            carrier:"Mixed"
-        },
-
-        "972":{
-            region:"Dallas",
-            state:"TX",
-            timezone:"America/Chicago",
-            carrier:"Mixed"
-        }
-    },
-
-    // ======================================================
-    // Country Names
-    // ======================================================
-
-    countries: {
-
-        US:"United States",
-        CA:"Canada",
-        MX:"Mexico",
-        GB:"United Kingdom",
-        FR:"France",
-        DE:"Germany",
-        ES:"Spain",
-        IT:"Italy",
-        JP:"Japan",
-        KR:"South Korea",
-        CN:"China",
-        IN:"India",
-        AU:"Australia",
-        NZ:"New Zealand",
-        BR:"Brazil",
-        AR:"Argentina",
-        ZA:"South Africa"
+        element.textContent =
+        value || "-";
 
     }
 
+
+}
+
+
+
+
+
+function clearResults(){
+
+
+    document
+    .querySelectorAll(
+        "strong"
+    )
+    .forEach(el=>{
+
+        el.textContent="-";
+
+    });
+
+
+
+    document
+    .getElementById(
+        "summaryList"
+    )
+    .innerHTML="";
+
+
+}
+
+
+
+
+
+
+
+function addSummary(text){
+
+
+
+    const list =
+    document.getElementById(
+        "summaryList"
+    );
+
+
+
+    const item =
+    document.createElement(
+        "li"
+    );
+
+
+
+    item.textContent =
+    "• " + text;
+
+
+
+    list.appendChild(
+        item
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Phone Data
+// ======================================================
+
+
+function renderPhone(data){
+
+
+
+    set(
+        "original",
+        data.original
+    );
+
+
+    set(
+        "international",
+        data.international
+    );
+
+
+    set(
+        "countryCode",
+        data.countryCode
+    );
+
+
+    set(
+        "numberType",
+        data.type
+    );
+
+
+
+    set(
+        "valid",
+        data.valid
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+
+    set(
+        "mobile",
+        data.mobile
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+    set(
+        "landline",
+        data.landline
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Geo
+// ======================================================
+
+
+function renderGeo(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "country",
+        data.country
+    );
+
+
+    set(
+        "region",
+        data.region
+    );
+
+
+    set(
+        "timezone",
+        data.timezone
+    );
+
+
+    set(
+        "callingCode",
+        data.callingCode
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Carrier
+// ======================================================
+
+
+function renderCarrier(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "carrier",
+        data.carrier
+    );
+
+
+    set(
+        "network",
+        data.network
+    );
+
+
+    set(
+        "mcc",
+        data.mcc
+    );
+
+
+    set(
+        "mnc",
+        data.mnc
+    );
+
+
+    set(
+        "technology",
+        data.technology
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Reputation
+// ======================================================
+
+
+function renderReputation(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+
+    set(
+        "spam",
+        data.spam
+    );
+
+
+    set(
+        "scams",
+        data.reports
+    );
+
+
+    set(
+        "business",
+        data.business
+    );
+
+
+    set(
+        "category",
+        data.category
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Database
+// ======================================================
+
+
+function renderDatabase(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "knownName",
+        data.name
+    );
+
+
+    set(
+        "source",
+        data.source
+    );
+
+
+    set(
+        "records",
+        data.records
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Main Analyzer
+// ======================================================
+
+
+async function analyze(){
+
+
+
+    const value =
+    input.value.trim();
+
+
+
+    if(!value)
+        return;
+
+
+
+    clearResults();
+
+
+
+    results.classList.remove(
+        "hidden"
+    );
+
+
+
+    set(
+        "status",
+        "Analyzing..."
+    );
+
+
+
+    try{
+
+
+
+
+
+
+        addSummary(
+            "Normalizing phone number"
+        );
+
+
+
+        const phone =
+        CellPhone.normalize(
+            value
+        );
+
+
+
+        renderPhone(
+            phone
+        );
+
+
+
+
+
+        addSummary(
+            "Detecting location"
+        );
+
+
+
+        const geo =
+        CellGeo.lookup(
+            phone
+        );
+
+
+
+        renderGeo(
+            geo
+        );
+
+
+
+
+
+
+
+        addSummary(
+            "Checking carrier intelligence"
+        );
+
+
+
+        const carrier =
+        CellCarrier.lookup(
+            phone,
+            geo
+        );
+
+
+
+        renderCarrier(
+            carrier
+        );
+
+
+
+
+
+
+
+
+        addSummary(
+            "Checking reputation database"
+        );
+
+
+
+        const reputation =
+        CellReputation.lookup(
+            phone
+        );
+
+
+
+        renderReputation(
+            reputation
+        );
+
+
+
+
+
+
+
+
+        addSummary(
+            "Searching local intelligence database"
+        );
+
+
+
+        const database =
+        CellDB.lookup(
+            phone
+        );
+
+
+
+        renderDatabase(
+            database
+        );
+
+
+
+
+
+
+
+        set(
+            "lookup",
+            "Complete"
+        );
+
+
+        set(
+            "confidence",
+            "🟢 Local Intelligence"
+        );
+
+
+        set(
+            "status",
+            "Complete"
+        );
+
+
+
+
+    }
+
+
+
+    catch(error){
+
+
+
+        console.error(
+            error
+        );
+
+
+        set(
+            "status",
+            "Failed"
+        );
+
+
+        addSummary(
+            error.message
+        );
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Events
+// ======================================================
+
+
+button.onclick =
+analyze;
+
+
+
+input.onkeydown =
+event=>{
+
+
+    if(
+        event.key==="Enter"
+    ){
+
+        analyze();
+
+    }
+
+
 };
+
+
+
+
+
+document
+.querySelectorAll(
+    ".example"
+)
+.forEach(button=>{
+
+
+    button.onclick =
+    ()=>{
+
+
+        input.value =
+        button.textContent;
+
+
+        analyze();
+
+
+    };
+
+
+});
+
+
+
+
+
+
+
+console.log(
+
+"%cCellScope Intelligence Controller Loaded",
+
+"color:#00d4ff;font-weight:bold;"
+
+);
