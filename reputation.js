@@ -2,15 +2,9 @@
 ==========================================================
 CellScope
 
-reputation.js v1
+reputation.js v2
 
 Phone Reputation Intelligence Engine
-
-Checks:
-- Known numbers
-- Spam patterns
-- Scam indicators
-- Risk score
 
 ==========================================================
 */
@@ -20,14 +14,12 @@ window.CellReputation = {
 
 
 
-
-
 // ======================================================
-// Risk Calculator
+// Risk Score
 // ======================================================
 
 
-calculateRisk(number){
+calculateRisk(phone){
 
 
 
@@ -35,39 +27,36 @@ calculateRisk(number){
 
 
 
-    const digits =
-    number.international
-    .replace(
-        /\D/g,
-        ""
-    );
+    const number =
+    phone.international;
 
 
 
-
-
-
-    // Suspicious prefixes
-
-    for(
-        const prefix of
-        CellDB.spamPatterns.highRiskCountries
+    if(
+        window.CellDB
     ){
 
 
 
-        if(
-            number.international
-            .startsWith(
-                prefix
-            )
+        for(
+            const prefix of
+            CellDB.spamPatterns.highRiskCountries
         ){
 
 
-            score += 40;
+            if(
+                number.startsWith(prefix)
+            ){
+
+
+                score += 40;
+
+
+            }
 
 
         }
+
 
 
     }
@@ -77,8 +66,16 @@ calculateRisk(number){
 
 
 
-    // Very repetitive numbers
 
+    const digits =
+    number.replace(
+        /\D/g,
+        ""
+    );
+
+
+
+    // Repeating numbers
 
     if(
         /(.)\1{4,}/
@@ -99,7 +96,10 @@ calculateRisk(number){
 
 
 
-    return score;
+    return Math.min(
+        score,
+        100
+    );
 
 
 
@@ -112,64 +112,40 @@ calculateRisk(number){
 
 
 // ======================================================
-// Category Detection
+// Lookup
 // ======================================================
 
 
-category(number){
+lookup(phone){
 
 
 
-    const known =
-    CellDB.lookup(
-        number.international
-    );
+    let known = null;
 
 
 
     if(
-        known
+        window.CellDB
     ){
 
 
-        return known.category;
+        known =
+        CellDB.lookup(
+            phone.international
+        );
 
 
     }
 
 
 
-    return "Unknown";
 
-
-
-},
-
-
-
-
-
-
-
-// ======================================================
-// Database Search
-// ======================================================
-
-
-lookup(number){
-
-
-
-    const known =
-    CellDB.lookup(
-        number.international
-    );
 
 
 
     const risk =
     this.calculateRisk(
-        number
+        phone
     );
 
 
@@ -177,8 +153,8 @@ lookup(number){
 
 
 
-
-    let level;
+    let level =
+    "Low Risk";
 
 
 
@@ -186,10 +162,8 @@ lookup(number){
         risk >= 70
     ){
 
-
         level =
         "High Risk";
-
 
     }
 
@@ -197,22 +171,10 @@ lookup(number){
         risk >= 40
     ){
 
-
         level =
         "Medium Risk";
 
-
     }
-
-    else{
-
-
-        level =
-        "Low Risk";
-
-
-    }
-
 
 
 
@@ -225,19 +187,16 @@ lookup(number){
 
 
         spam:
-
         level,
 
 
 
         riskScore:
-
-        risk,
+        risk + "%",
 
 
 
         reports:
-
         known
         ?
         1
@@ -247,7 +206,6 @@ lookup(number){
 
 
         business:
-
         known
         ?
         known.name
@@ -257,20 +215,20 @@ lookup(number){
 
 
         category:
-
-        this.category(
-            number
-        ),
+        known
+        ?
+        known.category
+        :
+        "Unknown",
 
 
 
         source:
-
         known
         ?
         known.source
         :
-        "Internal Intelligence"
+        "CellScope Intelligence"
 
 
 
@@ -285,8 +243,9 @@ lookup(number){
 
 
 
-
 };
+
+
 
 
 
@@ -294,7 +253,7 @@ lookup(number){
 
 console.log(
 
-"%cCellScope Reputation Engine Loaded",
+"%cCellScope Reputation Engine v2 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
