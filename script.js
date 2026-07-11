@@ -3,7 +3,7 @@
 CellScope
 script.js
 
-Main application controller
+Main Application Controller
 ==========================================================
 */
 
@@ -13,20 +13,24 @@ const button = document.getElementById("analyzeBtn");
 const results = document.getElementById("results");
 
 
-// ---------------------------------------------------------
+
+// ========================================================
 // Helpers
-// ---------------------------------------------------------
+// ========================================================
 
-function set(id,value){
+function set(id, value){
 
-    const element=document.getElementById(id);
+    const element = document.getElementById(id);
 
     if(element){
+
         element.textContent =
             value ?? "-";
+
     }
 
 }
+
 
 
 function yesNo(value){
@@ -38,6 +42,7 @@ function yesNo(value){
 }
 
 
+
 function titleCase(value){
 
     if(!value)
@@ -45,27 +50,69 @@ function titleCase(value){
 
 
     return value
-        .toLowerCase()
-        .replace(/\b\w/g,c=>c.toUpperCase());
+    .toLowerCase()
+    .replace(/\b\w/g,c=>c.toUpperCase());
 
 }
 
 
 
-// ---------------------------------------------------------
-// Main Analysis
-// ---------------------------------------------------------
+// ========================================================
+// Summary Renderer
+// ========================================================
+
+function renderSummary(items){
+
+    const list =
+        document.getElementById(
+            "summaryList"
+        );
+
+
+    if(!list)
+        return;
+
+
+    list.innerHTML="";
+
+
+    items.forEach(item=>{
+
+
+        const li =
+            document.createElement("li");
+
+
+        li.textContent =
+            "• " + item;
+
+
+        list.appendChild(li);
+
+
+    });
+
+
+}
+
+
+
+// ========================================================
+// Main Analyzer
+// ========================================================
 
 function analyze(){
 
 
-    const raw=input.value.trim();
+    const raw =
+        input.value.trim();
+
 
 
     if(!raw){
 
         alert(
-            "Enter a phone number first."
+            "Enter a phone number."
         );
 
         return;
@@ -77,17 +124,22 @@ function analyze(){
     let phone;
 
 
+
     try{
 
+
         phone =
-            libphonenumber.parsePhoneNumber(raw);
+        libphonenumber.parsePhoneNumber(raw);
 
 
-    }catch(error){
+
+    }
+
+    catch{
 
 
         alert(
-            "Unable to analyze this number."
+            "Invalid phone format."
         );
 
         return;
@@ -96,13 +148,19 @@ function analyze(){
 
 
 
-    results.classList.remove("hidden");
+
+
+    results.classList.remove(
+        "hidden"
+    );
 
 
 
-    /*
-    Basic phone intelligence
-    */
+
+
+    // ----------------------------------------------------
+    // Validation
+    // ----------------------------------------------------
 
 
     const valid =
@@ -117,7 +175,10 @@ function analyze(){
     let type="-";
 
 
-    if(typeof phone.getType==="function"){
+
+    if(
+        typeof phone.getType === "function"
+    ){
 
         type =
         titleCase(
@@ -127,10 +188,6 @@ function analyze(){
     }
 
 
-
-    /*
-    Formats
-    */
 
 
     set(
@@ -165,6 +222,15 @@ function analyze(){
 
 
 
+
+
+
+
+    // ----------------------------------------------------
+    // Formatting
+    // ----------------------------------------------------
+
+
     set(
         "e164",
         phone.number
@@ -190,9 +256,13 @@ function analyze(){
 
 
 
-    /*
-    Raw data
-    */
+
+
+
+
+    // ----------------------------------------------------
+    // Technical Data
+    // ----------------------------------------------------
 
 
     set(
@@ -215,34 +285,62 @@ function analyze(){
 
 
 
-    /*
-    Database Intelligence
-    */
+
+
+
+    // ----------------------------------------------------
+    // Breakdown
+    // ----------------------------------------------------
+
+
+    set(
+        "breakCountry",
+        "+" +
+        phone.countryCallingCode
+    );
+
+
+    set(
+        "breakNational",
+        phone.nationalNumber
+    );
+
+
+
+
+
+
+
+    // ----------------------------------------------------
+    // Metadata Lookup
+    // ----------------------------------------------------
 
 
     let areaCode="-";
+
     let region="-";
+
     let timezone="-";
+
     let carrier="-";
 
 
 
     if(
         window.CellScopeDB &&
-        phone.country==="US"
+        phone.country === "US"
     ){
 
 
         areaCode =
-            phone.nationalNumber
-            .substring(0,3);
+        phone.nationalNumber
+        .substring(0,3);
 
 
 
         const area =
-            CellScopeDB.areaCodes[
-                areaCode
-            ];
+        CellScopeDB
+        .areaCodes[areaCode];
 
 
 
@@ -250,15 +348,15 @@ function analyze(){
 
 
             region =
-                area.region;
+            area.region;
 
 
             timezone =
-                area.timezone;
+            area.timezone;
 
 
             carrier =
-                area.carrier;
+            area.carrier;
 
 
         }
@@ -268,9 +366,14 @@ function analyze(){
 
 
 
-
     set(
         "areaCode",
+        areaCode
+    );
+
+
+    set(
+        "breakArea",
         areaCode
     );
 
@@ -295,45 +398,69 @@ function analyze(){
 
 
 
-    /*
-    Advanced Intelligence
-    */
 
 
-    if(
-        window.CellScopeIntel
-    ){
+
+    // ----------------------------------------------------
+    // Intelligence Engine
+    // ----------------------------------------------------
+
+
+    if(window.CellScopeIntel){
+
 
 
         const intel =
-            CellScopeIntel.analyze(
-                phone
-            );
-
-
-        console.log(
-            "CellScope Intelligence:",
-            intel
+        CellScopeIntel.analyze(
+            phone
         );
 
 
-        console.log(
-            CellScopeIntel.summary({
 
-                valid,
+        const confidence =
+        intel.confidence;
 
-                country:
-                    phone.country,
 
-                region,
 
-                timezone,
-
-                type
-
-            })
-
+        set(
+            "confidence",
+            confidence.icon +
+            " " +
+            confidence.label
         );
+
+
+
+        set(
+            "analysisStatus",
+            "Complete"
+        );
+
+
+
+        const summary =
+        CellScopeIntel.summary({
+
+            valid,
+
+            country:
+                phone.country,
+
+            region,
+
+            timezone,
+
+            type
+
+
+        });
+
+
+
+        renderSummary(
+            summary
+        );
+
 
 
     }
@@ -344,10 +471,9 @@ function analyze(){
 
 
 
-
-// ---------------------------------------------------------
+// ========================================================
 // Events
-// ---------------------------------------------------------
+// ========================================================
 
 
 button.addEventListener(
@@ -373,23 +499,24 @@ input.addEventListener(
 
 
 
-// ---------------------------------------------------------
-// Example numbers
-// ---------------------------------------------------------
+
+// ========================================================
+// Example Numbers
+// ========================================================
 
 
 document
 .querySelectorAll(".example")
-.forEach(button=>{
+.forEach(btn=>{
 
 
-    button.addEventListener(
+    btn.addEventListener(
         "click",
         ()=>{
 
 
             input.value =
-                button.textContent.trim();
+            btn.textContent.trim();
 
 
             analyze();
@@ -403,22 +530,22 @@ document
 
 
 
-// ---------------------------------------------------------
+
+// ========================================================
 // Startup
-// ---------------------------------------------------------
+// ========================================================
 
 
 window.addEventListener(
     "load",
     ()=>{
 
-
         input.focus();
 
 
         console.log(
-            "%cCellScope Ready",
-            "color:#4da3ff;font-size:18px;font-weight:bold;"
+            "%cCellScope Online",
+            "color:#4da3ff;font-size:20px;font-weight:bold;"
         );
 
 
