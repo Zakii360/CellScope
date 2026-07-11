@@ -2,14 +2,9 @@
 ==========================================================
 CellScope
 
-geo.js v1
+geo.js v2
 
-Phone Geographic Intelligence Engine
-
-Uses:
-- Calling codes
-- Prefix intelligence
-- Country database
+Geographic Intelligence Engine
 
 ==========================================================
 */
@@ -19,10 +14,59 @@ window.CellGeo = {
 
 
 
+// ======================================================
+// Area Code Database
+// ======================================================
+
+
+areaCodes:{
+
+
+"212":{
+city:"New York City",
+region:"New York",
+country:"United States"
+},
+
+
+"213":{
+city:"Los Angeles",
+region:"California",
+country:"United States"
+},
+
+
+"305":{
+city:"Miami",
+region:"Florida",
+country:"United States"
+},
+
+
+"415":{
+city:"San Francisco",
+region:"California",
+country:"United States"
+},
+
+
+"44":{
+city:"London",
+region:"England",
+country:"United Kingdom"
+}
+
+
+},
+
+
+
+
+
 
 
 // ======================================================
-// Country Detection
+// Country Lookup
 // ======================================================
 
 
@@ -35,34 +79,50 @@ lookup(phone){
 
 
 
-    const country =
+    if(
+        !window.CellDB
+    ){
+
+
+        return {
+
+            country:"Unknown",
+            region:"Unknown",
+            timezone:"Unknown",
+            callingCode:code
+
+        };
+
+
+    }
+
+
+
+
+
+
+    const data =
     CellDB.getCountry(
         code
     );
 
 
 
-    if(!country){
+    if(!data){
 
 
         return {
 
 
-            country:
-            "Unknown",
+            country:"Unknown",
 
+            region:"Unknown",
 
-            region:
-            "Unknown",
+            timezone:"Unknown",
 
+            continent:"Unknown",
 
-            timezone:
-            "Unknown",
-
-
-            callingCode:
-            code
-
+            callingCode:code
 
 
         };
@@ -78,25 +138,20 @@ lookup(phone){
     return {
 
 
-
         country:
-        country.country,
-
+        data.country,
 
 
         region:
-        country.region,
-
+        data.region,
 
 
         timezone:
-        country.timezone,
-
+        data.timezone,
 
 
         continent:
-        country.continent,
-
+        data.continent,
 
 
         callingCode:
@@ -108,8 +163,6 @@ lookup(phone){
 
 
 
-
-
 },
 
 
@@ -119,112 +172,16 @@ lookup(phone){
 
 
 // ======================================================
-// Area Code Intelligence
+// Area Code Lookup
 // ======================================================
 
 
-areaCodes:{
+lookupArea(phone){
 
 
 
-"212":{
-
-city:
-"New York City",
-
-region:
-"New York",
-
-country:
-"United States"
-
-},
-
-
-
-
-"213":{
-
-city:
-"Los Angeles",
-
-region:
-"California",
-
-country:
-"United States"
-
-},
-
-
-
-
-"305":{
-
-city:
-"Miami",
-
-region:
-"Florida",
-
-country:
-"United States"
-
-},
-
-
-
-
-"415":{
-
-city:
-"San Francisco",
-
-region:
-"California",
-
-country:
-"United States"
-
-},
-
-
-
-
-"44":{
-
-city:
-"London",
-
-region:
-"England",
-
-country:
-"United Kingdom"
-
-}
-
-
-
-},
-
-
-
-
-
-
-
-// ======================================================
-// Area Lookup
-// ======================================================
-
-
-lookupArea(number){
-
-
-
-    const digits =
-    number.international
+    const number =
+    phone.international
     .replace(
         /\D/g,
         ""
@@ -237,13 +194,9 @@ lookupArea(number){
     ){
 
 
-
         if(
-            digits.includes(
-                code
-            )
+            number.includes(code)
         ){
-
 
 
             return this.areaCodes[code];
@@ -268,7 +221,7 @@ lookupArea(number){
 
 
 // ======================================================
-// Full Geographic Report
+// Full Analysis
 // ======================================================
 
 
@@ -291,11 +244,33 @@ analyze(phone){
 
 
 
+
     return {
 
 
 
-        ...base,
+        country:
+        base.country,
+
+
+        region:
+        area?.region
+        ||
+        base.region,
+
+
+        timezone:
+        base.timezone,
+
+
+        continent:
+        base.continent
+        ||
+        "Unknown",
+
+
+        callingCode:
+        base.callingCode,
 
 
 
@@ -323,8 +298,9 @@ analyze(phone){
 
 
 
-
 };
+
+
 
 
 
@@ -332,7 +308,7 @@ analyze(phone){
 
 console.log(
 
-"%cCellScope Geo Engine Loaded",
+"%cCellScope Geo Engine v2 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
