@@ -2,7 +2,7 @@
 ==========================================================
 CellScope
 
-script.js v2
+script.js v3
 
 Main Controller
 
@@ -15,22 +15,33 @@ document.addEventListener(
 ()=>{
 
 
+
 const CellScopeInput =
 document.getElementById(
-    "phoneInput"
+"phoneInput"
 );
+
+
+
+const CellScopeCountry =
+document.getElementById(
+"countrySelector"
+);
+
 
 
 const CellScopeButton =
 document.getElementById(
-    "analyzeBtn"
+"analyzeBtn"
 );
+
 
 
 const CellScopeResults =
 document.getElementById(
-    "results"
+"results"
 );
+
 
 
 
@@ -45,18 +56,16 @@ document.getElementById(
 function set(id,value){
 
 
-    const element =
-    document.getElementById(
-        id
-    );
+const element =
+document.getElementById(id);
 
 
-    if(element){
+if(element){
 
-        element.textContent =
-        value ?? "-";
+element.textContent =
+value ?? "-";
 
-    }
+}
 
 
 }
@@ -70,27 +79,28 @@ function set(id,value){
 function clearResults(){
 
 
-    document
-    .querySelectorAll(
-        "strong"
-    )
-    .forEach(
-        element=>{
+document
+.querySelectorAll(
+"strong"
+)
+.forEach(
+element=>{
 
-            element.textContent="-";
+element.textContent="-";
 
-        }
-    );
-
-
-    const list =
-    document.getElementById(
-        "summaryList"
-    );
+}
+);
 
 
-    if(list)
-        list.innerHTML="";
+
+const list =
+document.getElementById(
+"summaryList"
+);
+
+
+if(list)
+list.innerHTML="";
 
 
 }
@@ -104,30 +114,34 @@ function clearResults(){
 function addSummary(text){
 
 
-    const list =
-    document.getElementById(
-        "summaryList"
-    );
-
-
-    if(!list)
-        return;
+const list =
+document.getElementById(
+"summaryList"
+);
 
 
 
-    const item =
-    document.createElement(
-        "li"
-    );
+if(!list)
+return;
 
 
-    item.textContent =
-    "• " + text;
+
+const item =
+document.createElement(
+"li"
+);
 
 
-    list.appendChild(
-        item
-    );
+
+item.textContent =
+"• " + text;
+
+
+
+list.appendChild(
+item
+);
+
 
 
 }
@@ -140,7 +154,7 @@ function addSummary(text){
 
 
 // ======================================================
-// Render Functions
+// Render
 // ======================================================
 
 
@@ -148,61 +162,57 @@ function renderPhone(data){
 
 
 
-    set(
-        "original",
-        data.original
-    );
+set(
+"original",
+data.original
+);
 
 
-    set(
-        "international",
-        data.international
-    );
+
+set(
+"international",
+data.international
+);
 
 
-    set(
-        "countryCode",
-        data.countryCode
-    );
+
+set(
+"countryCode",
+data.countryCode
+);
 
 
-    set(
-        "numberType",
-        data.type
-    );
+
+set(
+"numberType",
+data.type
+);
 
 
-    set(
-        "valid",
-        data.valid
-        ?
-        "Yes"
-        :
-        "No"
-    );
+
+set(
+"valid",
+data.valid ? "Yes":"No"
+);
 
 
-    set(
-        "mobile",
-        data.mobile
-        ?
-        "Yes"
-        :
-        "No"
-    );
+
+set(
+"mobile",
+data.mobile ? "Yes":"No"
+);
 
 
-    set(
-        "landline",
-        data.landline
-        ?
-        "Yes"
-        :
-        "No"
-    );
+
+set(
+"landline",
+data.landline ? "Yes":"No"
+);
+
 
 
 }
+
 
 
 
@@ -212,33 +222,37 @@ function renderPhone(data){
 function renderGeo(data){
 
 
-    if(!data)
-        return;
+if(!data)
+return;
 
 
 
-    set(
-        "country",
-        data.country
-    );
+set(
+"country",
+data.country
+);
 
 
-    set(
-        "region",
-        data.region
-    );
+
+set(
+"region",
+data.region
+);
 
 
-    set(
-        "timezone",
-        data.timezone
-    );
+
+set(
+"timezone",
+data.timezone
+);
 
 
-    set(
-        "callingCode",
-        data.callingCode
-    );
+
+set(
+"callingCode",
+data.callingCode
+);
+
 
 
 }
@@ -252,39 +266,44 @@ function renderGeo(data){
 function renderCarrier(data){
 
 
-    if(!data)
-        return;
+if(!data)
+return;
 
 
 
-    set(
-        "carrier",
-        data.carrier
-    );
+set(
+"carrier",
+data.carrier
+);
 
 
-    set(
-        "network",
-        data.network
-    );
+
+set(
+"network",
+data.network
+);
 
 
-    set(
-        "mcc",
-        data.mcc
-    );
+
+set(
+"mcc",
+data.mcc
+);
 
 
-    set(
-        "mnc",
-        data.mnc
-    );
+
+set(
+"mnc",
+data.mnc
+);
 
 
-    set(
-        "technology",
-        data.technology
-    );
+
+set(
+"technology",
+data.technology
+);
+
 
 
 }
@@ -298,33 +317,37 @@ function renderCarrier(data){
 function renderReputation(data){
 
 
-    if(!data)
-        return;
+if(!data)
+return;
 
 
 
-    set(
-        "spam",
-        data.spam
-    );
+set(
+"spam",
+data.spam
+);
 
 
-    set(
-        "scams",
-        data.reports
-    );
+
+set(
+"scams",
+data.reports
+);
 
 
-    set(
-        "business",
-        data.business
-    );
+
+set(
+"business",
+data.business
+);
 
 
-    set(
-        "category",
-        data.category
-    );
+
+set(
+"category",
+data.category
+);
+
 
 
 }
@@ -338,27 +361,30 @@ function renderReputation(data){
 function renderDatabase(data){
 
 
-    if(!data)
-        return;
+if(!data)
+return;
 
 
 
-    set(
-        "knownName",
-        data.name
-    );
+set(
+"knownName",
+data.name
+);
 
 
-    set(
-        "source",
-        data.source
-    );
+
+set(
+"source",
+data.source
+);
 
 
-    set(
-        "records",
-        "1"
-    );
+
+set(
+"records",
+"1"
+);
+
 
 
 }
@@ -380,195 +406,253 @@ async function analyze(){
 
 
 
-    const value =
-    CellScopeInput.value.trim();
+const raw =
+CellScopeInput.value.trim();
 
 
 
-    if(!value)
-        return;
+if(!raw)
+return;
 
 
 
 
-    clearResults();
 
+clearResults();
 
 
-    CellScopeResults.classList.remove(
-        "hidden"
-    );
 
+CellScopeResults.classList.remove(
+"hidden"
+);
 
 
-    set(
-        "status",
-        "Analyzing..."
-    );
 
 
+set(
+"status",
+"Analyzing..."
+);
 
 
-    try{
 
+try{
 
-        addSummary(
-            "Parsing phone number"
-        );
 
 
+addSummary(
+"Combining country code"
+);
 
-        const phone =
-        CellPhone.normalize(
-            value
-        );
 
 
 
-        renderPhone(
-            phone
-        );
+let number =
+raw;
 
 
 
 
-        addSummary(
-            "Detecting geographic information"
-        );
+// Add selected country only
+// if user did not type +
 
+if(
+!number.startsWith("+")
+){
 
+number =
+CellScopeCountry.value +
+number;
 
-        const geo =
-        CellGeo.analyze(
-            phone
-        );
 
+}
 
 
-        renderGeo(
-            geo
-        );
 
 
 
+addSummary(
+"Parsing number"
+);
 
 
-        addSummary(
-            "Checking carrier database"
-        );
 
 
-        const carrier =
-        CellCarrier.lookup(
-            phone,
-            geo
-        );
 
+const phone =
+CellPhone.normalize(
+number
+);
 
-        renderCarrier(
-            carrier
-        );
 
 
+renderPhone(
+phone
+);
 
 
 
 
-        addSummary(
-            "Checking reputation"
-        );
 
 
 
-        const reputation =
-        CellReputation.lookup(
-            phone
-        );
+addSummary(
+"Finding geographic data"
+);
 
 
 
-        renderReputation(
-            reputation
-        );
 
 
+const geo =
+CellGeo.analyze(
+phone
+);
 
 
 
+renderGeo(
+geo
+);
 
 
-        addSummary(
-            "Searching local database"
-        );
 
 
 
-        const database =
-        CellDB.lookup(
-            phone.international
-        );
 
 
+addSummary(
+"Checking carrier"
+);
 
-        renderDatabase(
-            database
-        );
 
 
 
 
+const carrier =
+CellCarrier.lookup(
+phone,
+geo
+);
 
 
 
-        set(
-            "lookup",
-            "Complete"
-        );
+renderCarrier(
+carrier
+);
 
 
-        set(
-            "confidence",
-            "🟢 Local Intelligence"
-        );
 
 
-        set(
-            "status",
-            "Complete"
-        );
 
 
 
-    }
+addSummary(
+"Checking reputation"
+);
 
 
 
-    catch(error){
 
 
+const reputation =
+CellReputation.lookup(
+phone
+);
 
-        console.error(
-            error
-        );
 
 
-        set(
-            "status",
-            "Error"
-        );
+renderReputation(
+reputation
+);
 
 
-        addSummary(
-            error.message
-        );
 
 
 
-    }
+
+
+addSummary(
+"Searching database"
+);
+
+
+
+
+
+const database =
+CellDB.lookup(
+phone.international
+);
+
+
+
+renderDatabase(
+database
+);
+
+
+
+
+
+
+
+
+set(
+"lookup",
+"Complete"
+);
+
+
+
+set(
+"confidence",
+"🟢 Local Intelligence"
+);
+
+
+
+set(
+"status",
+"Complete"
+);
+
+
+
 
 
 
 }
+
+catch(error){
+
+
+
+console.error(
+error
+);
+
+
+
+set(
+"status",
+"Error"
+);
+
+
+
+addSummary(
+error.message
+);
+
+
+
+}
+
+
+
+}
+
 
 
 
@@ -585,8 +669,8 @@ async function analyze(){
 if(CellScopeButton){
 
 
-    CellScopeButton.onclick =
-    analyze;
+CellScopeButton.onclick =
+analyze;
 
 
 }
@@ -596,24 +680,23 @@ if(CellScopeButton){
 if(CellScopeInput){
 
 
-    CellScopeInput.onkeydown =
-    event=>{
+CellScopeInput.onkeydown =
+event=>{
 
 
-        if(
-            event.key==="Enter"
-        ){
+if(
+event.key==="Enter"
+){
 
-            analyze();
-
-        }
-
-
-    };
-
+analyze();
 
 }
 
+
+};
+
+
+}
 
 
 
@@ -652,7 +735,7 @@ analyze();
 
 console.log(
 
-"%cCellScope Controller v2 Loaded",
+"%cCellScope Controller v3 Loaded",
 
 "color:#00d4ff;font-weight:bold;"
 
