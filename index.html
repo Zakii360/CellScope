@@ -4,36 +4,66 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>CellScope • Phone Intelligence</title>
 
-<meta name="description" content="CellScope phone number intelligence platform">
+
+<meta name="description"
+content="CellScope phone number intelligence platform">
+
+
+
+<link rel="icon" href="data:image/svg+xml,
+%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E
+%3Ctext y='.9em' font-size='90'%3E📱%3C/text%3E
+%3C/svg%3E">
+
+
 
 <link rel="stylesheet" href="styles.css">
 
 
+
+<!-- Data + Engines -->
+
 <script src="database.js"></script>
+
 <script src="phone.js"></script>
-<script src="carrier.js"></script>
-<script src="reputation.js"></script>
+
 <script src="geo.js"></script>
 
+<script src="carrier.js"></script>
+
+<script src="reputation.js"></script>
+
+
+<!-- Controller -->
+
 <script src="script.js" defer></script>
+
 
 
 </head>
 
 
+
+
 <body>
+
 
 
 <div class="background">
 
 <div class="glow one"></div>
+
 <div class="glow two"></div>
 
 </div>
+
+
 
 
 
@@ -50,17 +80,21 @@
 </div>
 
 
+
 <div>
 
 <h1>
 CellScope
 </h1>
 
+
 <p>
 Phone Intelligence Platform
 </p>
 
+
 </div>
+
 
 
 </div>
@@ -74,21 +108,30 @@ Phone Intelligence Platform
 
 
 
+
+
 <main>
+
+
+
 
 
 <section class="hero">
 
 
+
 <h2>
-Discover phone numbers.
+Analyze any phone number.
 </h2>
 
 
 <p>
-Analyze carriers, regions,
-reputation, and metadata.
+Discover carrier, region, reputation,
+and technical intelligence.
 </p>
+
+
+
 
 
 
@@ -96,17 +139,87 @@ reputation, and metadata.
 <div class="search">
 
 
+
+<select id="countrySelector">
+
+
+<option value="+1">
+🇺🇸 +1 United States
+</option>
+
+
+
+<option value="+44">
+🇬🇧 +44 United Kingdom
+</option>
+
+
+
+<option value="+81">
+🇯🇵 +81 Japan
+</option>
+
+
+
+<option value="+33">
+🇫🇷 +33 France
+</option>
+
+
+
+<option value="+49">
+🇩🇪 +49 Germany
+</option>
+
+
+
+<option value="+61">
+🇦🇺 +61 Australia
+</option>
+
+
+
+<option value="+91">
+🇮🇳 +91 India
+</option>
+
+
+
+<option value="+86">
+🇨🇳 +86 China
+</option>
+
+
+
+<option value="+7">
+🌎 +7 Russia / Kazakhstan
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+
 <input
 
 id="phoneInput"
 
-type="text"
+type="tel"
 
-placeholder="+1 555 123 4567"
+placeholder="555 123 4567"
 
 autocomplete="off"
 
 />
+
+
+
+
 
 
 <button id="analyzeBtn">
@@ -116,7 +229,10 @@ Analyze
 </button>
 
 
+
 </div>
+
+
 
 
 
@@ -130,22 +246,29 @@ Try:
 </span>
 
 
+
 <button class="example">
-+14155552671
+4155552671
 </button>
 
 
+
 <button class="example">
-+442071838750
+2071838750
 </button>
 
 
+
 <button class="example">
-+819012345678
+9012345678
 </button>
+
 
 
 </div>
+
+
+
 
 
 </section>
@@ -169,9 +292,6 @@ Try:
 
 
 
-<!-- Summary -->
-
-
 <div class="card">
 
 
@@ -180,15 +300,12 @@ Try:
 </h3>
 
 
-
 <div class="rows">
 
 
 <div class="row">
 
-<span>
-Status
-</span>
+<span>Status</span>
 
 <strong id="status">
 -
@@ -198,12 +315,9 @@ Status
 
 
 
-
 <div class="row">
 
-<span>
-Confidence
-</span>
+<span>Confidence</span>
 
 <strong id="confidence">
 -
@@ -214,7 +328,6 @@ Confidence
 
 
 </div>
-
 
 
 <ul id="summaryList"></ul>
@@ -230,9 +343,6 @@ Confidence
 
 
 
-<!-- Number -->
-
-
 <div class="card">
 
 
@@ -241,15 +351,12 @@ Confidence
 </h3>
 
 
-
 <div class="rows">
 
 
 <div class="row">
 
-<span>
-Original
-</span>
+<span>Original</span>
 
 <strong id="original">
 -
@@ -258,12 +365,9 @@ Original
 </div>
 
 
-
 <div class="row">
 
-<span>
-International
-</span>
+<span>International</span>
 
 <strong id="international">
 -
@@ -272,12 +376,9 @@ International
 </div>
 
 
-
 <div class="row">
 
-<span>
-Country Code
-</span>
+<span>Country Code</span>
 
 <strong id="countryCode">
 -
@@ -286,14 +387,44 @@ Country Code
 </div>
 
 
+<div class="row">
+
+<span>Type</span>
+
+<strong id="numberType">
+-
+</strong>
+
+</div>
+
 
 <div class="row">
 
-<span>
-Number Type
-</span>
+<span>Valid</span>
 
-<strong id="numberType">
+<strong id="valid">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>Mobile</span>
+
+<strong id="mobile">
+-
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>Landline</span>
+
+<strong id="landline">
 -
 </strong>
 
@@ -311,9 +442,6 @@ Number Type
 
 
 
-
-
-<!-- Location -->
 
 
 <div class="card">
@@ -324,14 +452,13 @@ Number Type
 </h3>
 
 
+
 <div class="rows">
 
 
 <div class="row">
 
-<span>
-Country
-</span>
+<span>Country</span>
 
 <strong id="country">
 -
@@ -340,12 +467,9 @@ Country
 </div>
 
 
-
 <div class="row">
 
-<span>
-Region
-</span>
+<span>Region</span>
 
 <strong id="region">
 -
@@ -354,12 +478,9 @@ Region
 </div>
 
 
-
 <div class="row">
 
-<span>
-Timezone
-</span>
+<span>Timezone</span>
 
 <strong id="timezone">
 -
@@ -368,12 +489,9 @@ Timezone
 </div>
 
 
-
 <div class="row">
 
-<span>
-Calling Code
-</span>
+<span>Calling Code</span>
 
 <strong id="callingCode">
 -
@@ -396,9 +514,6 @@ Calling Code
 
 
 
-<!-- Carrier -->
-
-
 <div class="card">
 
 
@@ -407,15 +522,12 @@ Calling Code
 </h3>
 
 
-
 <div class="rows">
 
 
 <div class="row">
 
-<span>
-Carrier
-</span>
+<span>Carrier</span>
 
 <strong id="carrier">
 -
@@ -424,12 +536,9 @@ Carrier
 </div>
 
 
-
 <div class="row">
 
-<span>
-Network
-</span>
+<span>Network</span>
 
 <strong id="network">
 -
@@ -438,12 +547,9 @@ Network
 </div>
 
 
-
 <div class="row">
 
-<span>
-MCC
-</span>
+<span>MCC</span>
 
 <strong id="mcc">
 -
@@ -452,12 +558,9 @@ MCC
 </div>
 
 
-
 <div class="row">
 
-<span>
-MNC
-</span>
+<span>MNC</span>
 
 <strong id="mnc">
 -
@@ -466,12 +569,9 @@ MNC
 </div>
 
 
-
 <div class="row">
 
-<span>
-Technology
-</span>
+<span>Technology</span>
 
 <strong id="technology">
 -
@@ -480,7 +580,6 @@ Technology
 </div>
 
 
-
 </div>
 
 
@@ -492,9 +591,6 @@ Technology
 
 
 
-
-
-<!-- Reputation -->
 
 
 <div class="card">
@@ -511,9 +607,7 @@ Technology
 
 <div class="row">
 
-<span>
-Spam Risk
-</span>
+<span>Spam Risk</span>
 
 <strong id="spam">
 -
@@ -522,12 +616,9 @@ Spam Risk
 </div>
 
 
-
 <div class="row">
 
-<span>
-Scam Reports
-</span>
+<span>Reports</span>
 
 <strong id="scams">
 -
@@ -536,12 +627,9 @@ Scam Reports
 </div>
 
 
-
 <div class="row">
 
-<span>
-Business
-</span>
+<span>Business</span>
 
 <strong id="business">
 -
@@ -550,12 +638,9 @@ Business
 </div>
 
 
-
 <div class="row">
 
-<span>
-Category
-</span>
+<span>Category</span>
 
 <strong id="category">
 -
@@ -564,7 +649,6 @@ Category
 </div>
 
 
-
 </div>
 
 
@@ -576,18 +660,14 @@ Category
 
 
 
-
-
-<!-- Database -->
 
 
 <div class="card">
 
 
 <h3>
-🗃 Database Matches
+🗃 Database
 </h3>
-
 
 
 <div class="rows">
@@ -595,9 +675,7 @@ Category
 
 <div class="row">
 
-<span>
-Known Name
-</span>
+<span>Name</span>
 
 <strong id="knownName">
 -
@@ -606,12 +684,9 @@ Known Name
 </div>
 
 
-
 <div class="row">
 
-<span>
-Source
-</span>
+<span>Source</span>
 
 <strong id="source">
 -
@@ -620,12 +695,9 @@ Source
 </div>
 
 
-
 <div class="row">
 
-<span>
-Records
-</span>
+<span>Records</span>
 
 <strong id="records">
 -
@@ -634,7 +706,6 @@ Records
 </div>
 
 
-
 </div>
 
 
@@ -646,9 +717,6 @@ Records
 
 
 
-
-
-<!-- Technical -->
 
 
 <div class="card">
@@ -659,64 +727,18 @@ Records
 </h3>
 
 
-
 <div class="rows">
 
 
 <div class="row">
 
-<span>
-Valid
-</span>
-
-<strong id="valid">
--
-</strong>
-
-</div>
-
-
-
-<div class="row">
-
-<span>
-Possible Mobile
-</span>
-
-<strong id="mobile">
--
-</strong>
-
-</div>
-
-
-
-<div class="row">
-
-<span>
-Possible Fixed Line
-</span>
-
-<strong id="landline">
--
-</strong>
-
-</div>
-
-
-
-<div class="row">
-
-<span>
-Carrier Lookup
-</span>
+<span>Lookup</span>
 
 <strong id="lookup">
 -
 </strong>
 
 </div>
-
 
 
 </div>
@@ -736,6 +758,10 @@ Carrier Lookup
 </section>
 
 
+
+
+
+
 </main>
 
 
@@ -752,6 +778,9 @@ CellScope • Phone Intelligence Engine
 
 
 
+
+
 </body>
+
 
 </html>
