@@ -1,152 +1,425 @@
 /*
 ==========================================================
 CellScope
-script.js
 
-Main Application Controller
+script.js v1
+
+Main Intelligence Controller
+
 ==========================================================
 */
 
 
-const input = document.getElementById("phoneInput");
-const button = document.getElementById("analyzeBtn");
-const results = document.getElementById("results");
+const input =
+document.getElementById(
+    "phoneInput"
+);
+
+
+const button =
+document.getElementById(
+    "analyzeBtn"
+);
+
+
+const results =
+document.getElementById(
+    "results"
+);
 
 
 
-// ========================================================
-// Helpers
-// ========================================================
 
-function set(id, value){
 
-    const element = document.getElementById(id);
+
+// ======================================================
+// UI Helpers
+// ======================================================
+
+
+function set(id,value){
+
+
+    const element =
+    document.getElementById(
+        id
+    );
+
 
     if(element){
 
         element.textContent =
-            value ?? "-";
+        value || "-";
 
     }
 
-}
-
-
-
-function yesNo(value){
-
-    return value
-        ? "✓ Yes"
-        : "✕ No";
 
 }
 
 
 
-function titleCase(value){
-
-    if(!value)
-        return "-";
 
 
-    return value
-    .toLowerCase()
-    .replace(/\b\w/g,c=>c.toUpperCase());
-
-}
+function clearResults(){
 
 
+    document
+    .querySelectorAll(
+        "strong"
+    )
+    .forEach(el=>{
 
-// ========================================================
-// Summary Renderer
-// ========================================================
-
-function renderSummary(items){
-
-    const list =
-        document.getElementById(
-            "summaryList"
-        );
-
-
-    if(!list)
-        return;
-
-
-    list.innerHTML="";
-
-
-    items.forEach(item=>{
-
-
-        const li =
-            document.createElement("li");
-
-
-        li.textContent =
-            "• " + item;
-
-
-        list.appendChild(li);
-
+        el.textContent="-";
 
     });
 
 
+
+    document
+    .getElementById(
+        "summaryList"
+    )
+    .innerHTML="";
+
+
 }
 
 
 
-// ========================================================
+
+
+
+
+function addSummary(text){
+
+
+
+    const list =
+    document.getElementById(
+        "summaryList"
+    );
+
+
+
+    const item =
+    document.createElement(
+        "li"
+    );
+
+
+
+    item.textContent =
+    "• " + text;
+
+
+
+    list.appendChild(
+        item
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Phone Data
+// ======================================================
+
+
+function renderPhone(data){
+
+
+
+    set(
+        "original",
+        data.original
+    );
+
+
+    set(
+        "international",
+        data.international
+    );
+
+
+    set(
+        "countryCode",
+        data.countryCode
+    );
+
+
+    set(
+        "numberType",
+        data.type
+    );
+
+
+
+    set(
+        "valid",
+        data.valid
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+
+    set(
+        "mobile",
+        data.mobile
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+    set(
+        "landline",
+        data.landline
+        ?
+        "Yes"
+        :
+        "No"
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Geo
+// ======================================================
+
+
+function renderGeo(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "country",
+        data.country
+    );
+
+
+    set(
+        "region",
+        data.region
+    );
+
+
+    set(
+        "timezone",
+        data.timezone
+    );
+
+
+    set(
+        "callingCode",
+        data.callingCode
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Carrier
+// ======================================================
+
+
+function renderCarrier(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "carrier",
+        data.carrier
+    );
+
+
+    set(
+        "network",
+        data.network
+    );
+
+
+    set(
+        "mcc",
+        data.mcc
+    );
+
+
+    set(
+        "mnc",
+        data.mnc
+    );
+
+
+    set(
+        "technology",
+        data.technology
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Reputation
+// ======================================================
+
+
+function renderReputation(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+
+    set(
+        "spam",
+        data.spam
+    );
+
+
+    set(
+        "scams",
+        data.reports
+    );
+
+
+    set(
+        "business",
+        data.business
+    );
+
+
+    set(
+        "category",
+        data.category
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// Render Database
+// ======================================================
+
+
+function renderDatabase(data){
+
+
+
+    if(!data)
+        return;
+
+
+
+    set(
+        "knownName",
+        data.name
+    );
+
+
+    set(
+        "source",
+        data.source
+    );
+
+
+    set(
+        "records",
+        data.records
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
 // Main Analyzer
-// ========================================================
-
-function analyze(){
+// ======================================================
 
 
-    const raw =
-        input.value.trim();
+async function analyze(){
 
 
 
-    if(!raw){
+    const value =
+    input.value.trim();
 
-        alert(
-            "Enter a phone number."
-        );
 
+
+    if(!value)
         return;
 
-    }
 
 
-
-    let phone;
-
-
-
-    try{
-
-
-        phone =
-        libphonenumber.parsePhoneNumber(raw);
-
-
-
-    }
-
-    catch{
-
-
-        alert(
-            "Invalid phone format."
-        );
-
-        return;
-
-    }
-
-
+    clearResults();
 
 
 
@@ -156,314 +429,183 @@ function analyze(){
 
 
 
-
-
-    // ----------------------------------------------------
-    // Validation
-    // ----------------------------------------------------
-
-
-    const valid =
-        phone.isValid();
-
-
-    const possible =
-        phone.isPossible();
+    set(
+        "status",
+        "Analyzing..."
+    );
 
 
 
-    let type="-";
+    try{
 
 
 
-    if(
-        typeof phone.getType === "function"
-    ){
 
-        type =
-        titleCase(
-            phone.getType()
+
+
+        addSummary(
+            "Normalizing phone number"
         );
 
-    }
 
 
+        const phone =
+        CellPhone.normalize(
+            value
+        );
 
 
-    set(
-        "valid",
-        yesNo(valid)
-    );
 
-
-    set(
-        "possible",
-        yesNo(possible)
-    );
-
-
-    set(
-        "type",
-        type
-    );
-
-
-    set(
-        "country",
-        phone.country
-    );
-
-
-    set(
-        "callingCode",
-        "+" +
-        phone.countryCallingCode
-    );
-
-
-
-
-
-
-
-    // ----------------------------------------------------
-    // Formatting
-    // ----------------------------------------------------
-
-
-    set(
-        "e164",
-        phone.number
-    );
-
-
-    set(
-        "international",
-        phone.formatInternational()
-    );
-
-
-    set(
-        "national",
-        phone.formatNational()
-    );
-
-
-    set(
-        "rfc",
-        phone.getURI()
-    );
-
-
-
-
-
-
-
-    // ----------------------------------------------------
-    // Technical Data
-    // ----------------------------------------------------
-
-
-    set(
-        "rawInput",
-        raw
-    );
-
-
-    set(
-        "nationalNumber",
-        phone.nationalNumber
-    );
-
-
-    set(
-        "countryCode",
-        phone.countryCallingCode
-    );
-
-
-
-
-
-
-
-    // ----------------------------------------------------
-    // Breakdown
-    // ----------------------------------------------------
-
-
-    set(
-        "breakCountry",
-        "+" +
-        phone.countryCallingCode
-    );
-
-
-    set(
-        "breakNational",
-        phone.nationalNumber
-    );
-
-
-
-
-
-
-
-    // ----------------------------------------------------
-    // Metadata Lookup
-    // ----------------------------------------------------
-
-
-    let areaCode="-";
-
-    let region="-";
-
-    let timezone="-";
-
-    let carrier="-";
-
-
-
-    if(
-        window.CellScopeDB &&
-        phone.country === "US"
-    ){
-
-
-        areaCode =
-        phone.nationalNumber
-        .substring(0,3);
-
-
-
-        const area =
-        CellScopeDB
-        .areaCodes[areaCode];
-
-
-
-        if(area){
-
-
-            region =
-            area.region;
-
-
-            timezone =
-            area.timezone;
-
-
-            carrier =
-            area.carrier;
-
-
-        }
-
-
-    }
-
-
-
-    set(
-        "areaCode",
-        areaCode
-    );
-
-
-    set(
-        "breakArea",
-        areaCode
-    );
-
-
-    set(
-        "region",
-        region
-    );
-
-
-    set(
-        "timezone",
-        timezone
-    );
-
-
-    set(
-        "carrier",
-        carrier
-    );
-
-
-
-
-
-
-
-    // ----------------------------------------------------
-    // Intelligence Engine
-    // ----------------------------------------------------
-
-
-    if(window.CellScopeIntel){
-
-
-
-        const intel =
-        CellScopeIntel.analyze(
+        renderPhone(
             phone
         );
 
 
 
-        const confidence =
-        intel.confidence;
 
 
-
-        set(
-            "confidence",
-            confidence.icon +
-            " " +
-            confidence.label
+        addSummary(
+            "Detecting location"
         );
 
 
 
+        const geo =
+        CellGeo.lookup(
+            phone
+        );
+
+
+
+        renderGeo(
+            geo
+        );
+
+
+
+
+
+
+
+        addSummary(
+            "Checking carrier intelligence"
+        );
+
+
+
+        const carrier =
+        CellCarrier.lookup(
+            phone,
+            geo
+        );
+
+
+
+        renderCarrier(
+            carrier
+        );
+
+
+
+
+
+
+
+
+        addSummary(
+            "Checking reputation database"
+        );
+
+
+
+        const reputation =
+        CellReputation.lookup(
+            phone
+        );
+
+
+
+        renderReputation(
+            reputation
+        );
+
+
+
+
+
+
+
+
+        addSummary(
+            "Searching local intelligence database"
+        );
+
+
+
+        const database =
+        CellDB.lookup(
+            phone
+        );
+
+
+
+        renderDatabase(
+            database
+        );
+
+
+
+
+
+
+
         set(
-            "analysisStatus",
+            "lookup",
+            "Complete"
+        );
+
+
+        set(
+            "confidence",
+            "🟢 Local Intelligence"
+        );
+
+
+        set(
+            "status",
             "Complete"
         );
 
 
 
-        const summary =
-        CellScopeIntel.summary({
 
-            valid,
-
-            country:
-                phone.country,
-
-            region,
-
-            timezone,
-
-            type
-
-
-        });
+    }
 
 
 
-        renderSummary(
-            summary
+    catch(error){
+
+
+
+        console.error(
+            error
+        );
+
+
+        set(
+            "status",
+            "Failed"
+        );
+
+
+        addSummary(
+            error.message
         );
 
 
 
     }
+
 
 
 
@@ -471,59 +613,60 @@ function analyze(){
 
 
 
-// ========================================================
+
+
+
+
+
+
+// ======================================================
 // Events
-// ========================================================
+// ======================================================
 
 
-button.addEventListener(
-    "click",
-    analyze
-);
+button.onclick =
+analyze;
 
 
 
-input.addEventListener(
-    "keydown",
-    event=>{
+input.onkeydown =
+event=>{
 
-        if(event.key==="Enter"){
 
-            analyze();
+    if(
+        event.key==="Enter"
+    ){
 
-        }
+        analyze();
 
     }
 
-);
+
+};
 
 
 
-
-// ========================================================
-// Example Numbers
-// ========================================================
 
 
 document
-.querySelectorAll(".example")
-.forEach(btn=>{
+.querySelectorAll(
+    ".example"
+)
+.forEach(button=>{
 
 
-    btn.addEventListener(
-        "click",
-        ()=>{
+    button.onclick =
+    ()=>{
 
 
-            input.value =
-            btn.textContent.trim();
+        input.value =
+        button.textContent;
 
 
-            analyze();
+        analyze();
 
 
-        }
-    );
+    };
 
 
 });
@@ -531,23 +674,13 @@ document
 
 
 
-// ========================================================
-// Startup
-// ========================================================
 
 
-window.addEventListener(
-    "load",
-    ()=>{
 
-        input.focus();
+console.log(
 
+"%cCellScope Intelligence Controller Loaded",
 
-        console.log(
-            "%cCellScope Online",
-            "color:#4da3ff;font-size:20px;font-weight:bold;"
-        );
+"color:#00d4ff;font-weight:bold;"
 
-
-    }
 );
